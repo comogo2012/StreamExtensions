@@ -32,16 +32,28 @@ This is an endless stream because:
 * it's easier to create an endless stream than a finite stream, actually, and 
 * we don't necessarily define an ending date, because we don't know when our meetings will come to an end and the future (famously) is hard to predict.
 Clearly, I won't be using the entire infinite array. Instead in my case I want to build just this year's calendar of events, and so I want to limit my stream to just those dates through the end of the year. The problem is that I can't use `limit` because `limit` only takes a count and I don't know and/or am too lazy to count how many items this will be.
-What I need is a special `limitWhile` method, a short-circuiting, intermediate method which takes a `Predicate` rather that an `int`, which I can use to handle the stream the right way. Something like this:
+What I need is a special `streamWhile` method, a short-circuiting, intermediate method which takes a `Predicate` rather that an `int`, which I can use to handle the stream the right way. Something like this:
 ```
      Predicate<LocalDate> dateIsBeforeEnd = d -> d.isBefore(endDate);
-     List<LocalDate> events = endlessFirstsOfMonth.limitWhile(dateIsBeforeEnd).collect(Collectors.toList());
+     List<LocalDate> events = endlessFirstsOfMonth.streamWhile(dateIsBeforeEnd).collect(Collectors.toList());
 ```
 The problem is: `limitWhen` doesn't exist in the `Stream` API, and you can't insert your custom method there.
 But we can do the next best thing, and set up a set of functions that take a stream and returns a stream, and break up the above into an inverted statement like this:
 ```
-     List<LocalDate> events = limitWhile(endlessFirstsOfMonth, dateIsBeforeEnd).collect(Collectors.toList());
+     List<LocalDate> events = streamWhile(endlessFirstsOfMonth, dateIsBeforeEnd).collect(Collectors.toList());
 ```
+This Java library provides useful streaming methods like `streamWhile` and more. Below is a partial manifest of the most important streaming functions and other helper objects, which is then followed by a "wish list" of methods that I would like to have in a future release, if possible.
 
+## Manifest
 
+* streamWhile
+* filterAndMap
+* streamAndMapWhile
+* streamFilterAndMapWhile
+* TerminableStream
+
+## Wish List
+
+* prime
+* primeWhile
 
