@@ -15,9 +15,9 @@ int sum = widgets.stream()
 ```
 Here `filter` is a so-called intermediate method which takes this stream and returns another stream, filtering elements according to its parameter, a  [Predicate](http://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html) taking an element from the stream and returning `true` if the item should be passed downsteam or `false` otherwise.
 
-`mapToInt` is another intermediate method, here one that maps stream values to a different type of object, pushing the new stream with the newly mapped objects downstream. It takes a [Function](http://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html) as a callback to perform this mapping.
-
 `limit(10)` is a 'short-circuiting' intermediate method, which in this case delivers 10 items downstream, after which it terminates like other terminating methods.
+
+`mapToInt` is another intermediate method, here one that maps stream values to a different type of object, pushing the new stream with the newly mapped objects downstream. It takes a [Function](http://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html) as a callback to perform this mapping.
 
 `sum` is a terminating method which is at the tail end of the stream, accumulates the state of the incoming stream by pulling all elements, exhausting the stream.
 
@@ -31,14 +31,15 @@ Suppose I was writing a scheduling application and want to schedule meetings on 
 This is an endless stream because:
 * it's easier to create an endless stream than a finite stream, actually, and 
 * we don't necessarily define an ending date, because we don't know when our meetings will come to an end and the future (famously) is hard to predict.
-Clearly, I won't be using the entire infinite array. Instead in my case I want to build just this year's calendar of events, and so I want to limit my stream to just those dates through the end of the year. The problem is that I can't use `limit` because `limit` only takes a count and I don't know and/or am too lazy to count how many items this will be.
+
+Clearly, I won't be using the entire infinite array. Instead in my case I want to build just this year's calendar of events, and so I want to limit my stream to just those dates through the end of the year. The problem is that I can't use `limit` because `limit` only takes an `int` count and I don't know and/or am too lazy to count how many items this will become.
 What I need is a special `streamWhile` method, a short-circuiting, intermediate method which takes a `Predicate` rather that an `int`, which I can use to handle the stream the right way. Something like this:
 ```
-     Predicate<LocalDate> dateIsBeforeEnd = d -> d.isBefore(endDate);
+     Predicate<LocalDate> dateIsBeforeEnd = d -> d.isBefore(beginningOfNextYear);
      List<LocalDate> events = endlessFirstsOfMonth.streamWhile(dateIsBeforeEnd).collect(Collectors.toList());
 ```
-The problem is: `limitWhen` doesn't exist in the `Stream` API, and you can't insert your custom method there.
-But we can do the next best thing, and set up a set of functions that take a stream and returns a stream, and break up the above into an inverted statement like this:
+The problem is: `streamWhile` doesn't exist in the `Stream` API, and you can't insert your custom method there.
+But we can do the next best thing and provide a set of functions that take a stream and returns a stream, and invert the statement above like this:
 ```
      List<LocalDate> events = streamWhile(endlessFirstsOfMonth, dateIsBeforeEnd).collect(Collectors.toList());
 ```
@@ -72,3 +73,9 @@ java-stream-extensions/
 +--build/                    [Generated] Build products output directory for ant.
 +--dist/                     [Generated] The destination folder for Java Stream Extension distributions.
 ```
+
+# Repository structure
+
+* Java version 8 or above
+* Ant any version
+
