@@ -57,3 +57,18 @@ This Java library provides useful streaming methods like `streamWhile` and more.
 * prime
 * primeWhile
 
+# Repository structure
+
+```
+java-stream-extensions/
++--build.xml                 The Ant build script.
++--pull-binary-libs.sh       Pulls binary artifacts from remote repository.
++--lib/                      Pre-compiled libraries for the build.
++--src/                      All sources.
+   +---/com.eis.stream/      Java Stream Extension Sources.
++--scripts/                  Scripts for the CI jobs (including building releases)
++--test/                     The Java Stream Extension test suite.
+   +---/com.eis.stream/         Test Suite Sources.
++--build/                    [Generated] Build products output directory for ant.
++--dist/                     [Generated] The destination folder for Java Stream Extension distributions.
+```
