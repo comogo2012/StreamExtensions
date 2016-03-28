@@ -21,7 +21,7 @@ Here `filter` is a so-called intermediate method which takes this stream and ret
 
 `sum` is a terminating method which is at the tail end of the stream, accumulates the state of the incoming stream by pulling all elements, exhausting the stream.
 
-Given all this, when the developer works deep enough within the Stream framework she will be confronted with certain limitations.
+Given all this, when working in the Stream framework the programmer will be confronted with certain missing functionality, such as the ability to terminate the stream based upon some predicate. In other words `limit` with a Predicate limiter rather than some hard count.
 
 Suppose I was writing a scheduling application and want to schedule meetings on the first Friday of every month.  My design calls for producing an endless stream of dates which define the first Friday of each month, starting from a certain month. 
 ```
@@ -36,27 +36,18 @@ Clearly, I won't be using the entire infinite array. Instead in my case I want t
 What I need is a special `streamWhile` method, a short-circuiting, intermediate method which takes a `Predicate` rather that an `int`, which I can use to handle the stream the right way. Something like this:
 ```
      Predicate<LocalDate> dateIsBeforeEnd = d -> d.isBefore(beginningOfNextYear);
-     List<LocalDate> events = endlessFirstsOfMonth.streamWhile(dateIsBeforeEnd).collect(Collectors.toList());
+     List<LocalDate> events = endlessFirstsOfMonth.takeWhile(dateIsBeforeEnd).collect(Collectors.toList());
 ```
-The problem is: `streamWhile` doesn't exist in the `Stream` API, and you can't insert your custom method there.
+The problem is: `takeWhile` won't exist in the `Stream` API until [JDK9](http://download.java.net/jdk9/docs/api/java/util/stream/Stream.html#takeWhile-java.util.function.Predicate-), and you can't insert your custom method there.
 But we can do the next best thing and provide a set of functions that take a stream and returns a stream, and invert the statement above like this:
 ```
-     List<LocalDate> events = streamWhile(endlessFirstsOfMonth, dateIsBeforeEnd).collect(Collectors.toList());
+     List<LocalDate> events = takeWhile(endlessFirstsOfMonth, dateIsBeforeEnd).collect(Collectors.toList());
 ```
-This Java library provides useful streaming methods like `streamWhile` and more. Below is a partial manifest of the most important streaming functions and other helper objects, which is then followed by a "wish list" of methods that I would like to have in a future release, if possible.
+This Java library provides useful streaming methods like `takeWhile` and more. Below is a partial manifest of the most important streaming functions and other helper objects, which is then followed by a "wish list" of methods that I would like to have in a future release, if possible.
 
 ## Manifest
 
-* streamWhile
-* filterAndMap
-* streamAndMapWhile
-* streamFilterAndMapWhile
-* TerminableStream
-
-## Wish List
-
-* prime
-* primeWhile
+* takeWhile
 
 # Repository structure
 
