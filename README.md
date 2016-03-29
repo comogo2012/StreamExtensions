@@ -53,16 +53,24 @@ This Java library provides useful streaming methods like `takeWhile` and more. B
 
 ```
 java-stream-extensions/
-+--build.xml                 The Ant build script.
-+--pull-binary-libs.sh       Pulls binary artifacts from remote repository.
-+--lib/                      Pre-compiled libraries for the build.
-+--src/                      All sources.
-   +---/com.eis.stream/      Java Stream Extension Sources.
-+--scripts/                  Scripts for the CI jobs (including building releases)
-+--test/                     The Java Stream Extension test suite.
-   +---/com.eis.stream/         Test Suite Sources.
-+--build/                    [Generated] Build products output directory for ant.
-+--dist/                     [Generated] The destination folder for Java Stream Extension distributions.
++--- LICENSE.md                End-User license
++--- README.md                 Overview of the repository (this markup file).
++--- CHANGELOG.md              Change history
++--- .gitattributes
++--- .gitignore
++--- .travis.yml
++--- docs/                     All non-generated documentation
+     +--- TOC.md                   Table of contents
+     +--- faq.md                   Frequently asked questions
+     +--- usage.md                 Demonstrations on usage
++--- src/                      All sources.
+     +--- java/com/...             All java main, non-test sources
++--- test/                     The Java Stream Extension test suite.
+     +--- java/com/...             Test Suite Sources.
++--- meta/                     Build scripts, ide configs
+     +--- scripts/                  Scripts for the CI jobs (including building releases)
+     +--- ide/eclipse               .project, .classpath, .settings
+     +--- build.xml                 And build script, other scripts...
 ```
 
 # Repository structure
